@@ -1,0 +1,45 @@
+name: "CI Pipeline"
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  deploy_staging:
+    defaults:
+      run:
+        shell: bash
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Build and bring up services
+        run: |
+          mv .env.staging .env
+          docker compose up -d --build
+          docker compose logs django_gunicorn
+
+      - name: Run tests
+        run: |
+          docker compose exec django_gunicorn pytest
