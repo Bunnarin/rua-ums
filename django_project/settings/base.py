@@ -22,9 +22,14 @@ INSTALLED_APPS = [
     'cachalot',
     'auditlog',
     'django_crontab',
+    'bulk_update_or_create',
+    'pwa',
     # mine
     'apps.core',
-    'apps.user',
+    'apps.users',
+    'apps.organization',
+    'apps.academic',
+    'apps.activities',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +57,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.core.context_processors.organization_data',
             ],
         },
     },
@@ -84,7 +90,7 @@ CACHES = {
 }
 
 # Auth
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'users.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -139,11 +145,25 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 AUDITLOG_INCLUDE_ALL_MODELS = True
 AUDITLOG_EXCLUDE_TRACKING_MODELS = (
     "sessions",
+    "activities",
+    "organization",
+    "academic.evaluationtemplate",
+    "academic.evaluation",
+    "academic.course",
 )
 
 # cron jobs
 CRON_JOBS = [
     ('0 0 12 1 1/1 ? *', 'django.core.management.call_command', ['auditlogflush', '--yes'])
+]
+
+# pwa
+PWA_APP_NAME = 'Camfood Portal'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/image/logo.png',
+        'sizes': '160x160'
+    }
 ]
 
 

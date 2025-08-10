@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.contrib.auth.models import Group
 from decouple import config
 from django.contrib.auth import get_user_model

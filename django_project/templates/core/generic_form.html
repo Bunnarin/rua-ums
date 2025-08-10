@@ -3,7 +3,16 @@
 {% block extra_head %}
 <!-- for select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />     
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />  
+<!-- for inline formset -->
+<script src="{% static 'js/formset.js' %}"></script>
+<script type="text/javascript">
+    $('.formset_row').formset({
+        prefix: '{{ formset.prefix }}',
+        addCssClass: 'btn btn-primary',  
+        deleteCssClass: 'btn btn-danger',
+    });
+</script>   
 {% endblock %}
 
 {% block content %}
@@ -82,16 +91,6 @@
                 width: '100%'
             });
         });
-    });
-</script>
-
-<!-- for inline formset -->
-<script src="{% static 'js/formset.js' %}"></script>
-<script type="text/javascript">
-    $('.formset_row').formset({
-        prefix: '{{ formset.prefix }}',
-        addCssClass: 'btn btn-primary',  
-        deleteCssClass: 'btn btn-danger',
     });
 </script>
 {% endblock %}
