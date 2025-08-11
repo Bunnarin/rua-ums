@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django_crontab',
     'bulk_update_or_create',
     'pwa',
+    'django_jsonform',
     # mine
     'apps.core',
     'apps.users',
@@ -43,6 +44,8 @@ MIDDLEWARE = [
     # 3rd party
     "allauth.account.middleware.AccountMiddleware",
     'auditlog.middleware.AuditlogMiddleware',
+    # mine
+    'apps.core.middleware.GlobalExceptionHandlingMiddleware',
 ]
 
 ROOT_URLCONF = 'django_project.urls'
@@ -82,12 +85,14 @@ DATABASES = {
 }
 
 # cache
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-        "LOCATION": "my_cache_table",
+# we inject using .env to prevent migration conflict
+if not config('CACHE_DISABLED', default=False, cast=bool):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+            "LOCATION": "my_cache_table",
+        }
     }
-}
 
 # Auth
 AUTH_USER_MODEL = 'users.User'
@@ -158,7 +163,7 @@ CRON_JOBS = [
 ]
 
 # pwa
-PWA_APP_NAME = 'Camfood Portal'
+PWA_APP_NAME = 'RUA Portal'
 PWA_APP_ICONS = [
     {
         'src': '/static/image/logo.png',

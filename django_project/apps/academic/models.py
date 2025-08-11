@@ -42,6 +42,9 @@ class Classroom(OrganizationMixin):
 
     def __str__(self):
         return self.name
+    
+    def get_user_rls_filter(self, user):
+        return Q(False)
 
 class Schedule(models.Model):
     """

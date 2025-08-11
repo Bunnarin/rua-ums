@@ -6,14 +6,30 @@ from django_jsonform.widgets import JSONFormWidget
 from extra_views import InlineFormSetView
 from apps.core.generic_views import BaseListView, BaseCreateView, BaseUpdateView, BaseDeleteView, BaseBulkDeleteView, BaseWriteView
 from apps.core.forms import json_to_schema
-from .models import Course, Class, Schedule, Score, Evaluation, EvaluationTemplate
+from .models import Course, Class, Schedule, Score, Evaluation, EvaluationTemplate, Classroom
 from .forms import create_score_form_class, ScheduleForm
+
+class ClassroomListView(BaseListView):
+    model = Classroom
+    table_fields = ['name']
+    object_actions = [('✏️', 'academic:change_classroom', None), 
+    ('❌', 'academic:delete_classroom', None)]
+    actions = [('+', 'academic:add_classroom', None)]
+
+class ClassroomCreateView(BaseCreateView):
+    model = Classroom
+
+class ClassroomUpdateView(BaseUpdateView):
+    model = Classroom
+
+class ClassroomDeleteView(BaseDeleteView):
+    model = Classroom
 
 class CourseListView(BaseListView):
     model = Course
     table_fields = ['name', 'year']
     object_actions = [('✏️', 'academic:change_course', None), 
-    ('🗑️', 'academic:delete_course', None)]
+    ('❌', 'academic:delete_course', None)]
     actions = [('+', 'academic:add_course', None)]
 
 class CourseCreateView(BaseCreateView):
@@ -29,7 +45,7 @@ class ScheduleListView(BaseListView):
     model = Schedule
     object_actions = [('score', 'academic:add_score', None),
                ('evaluation', 'academic:add_evaluation', None)]
-    table_fields = ['professor', 'course', 'course.year', '_class']
+    table_fields = ['professor', 'course', 'course.year', '_class', 'classroom']
 
 class ScoreStudentListView(BaseListView):
     model = Score
@@ -97,7 +113,7 @@ class EvaluationBulkDeleteView(BaseBulkDeleteView):
 class ClassListView(BaseListView):
     model = Class
     object_actions = [('✏️', 'academic:change_class', None),
-               ('🗑️', 'academic:delete_class', None)]
+               ('❌', 'academic:delete_class', None)]
     actions = [('+', 'academic:add_class', None)]
     table_fields = ['generation', 'name']
 

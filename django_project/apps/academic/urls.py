@@ -4,6 +4,11 @@ from . import views
 app_name = 'academic'
 
 urlpatterns = [
+    # classroom
+    path('classrooms/', views.ClassroomListView.as_view(), name='view_classroom'),
+    path('classrooms/create/', views.ClassroomCreateView.as_view(), name='add_classroom'),
+    path('classrooms/change/<int:pk>/', views.ClassroomUpdateView.as_view(), name='change_classroom'),
+    path('classrooms/delete/<int:pk>/', views.ClassroomDeleteView.as_view(), name='delete_classroom'),
     # course
     path('courses/', views.CourseListView.as_view(), name='view_course'),
     path('courses/create/', views.CourseCreateView.as_view(), name='add_course'),

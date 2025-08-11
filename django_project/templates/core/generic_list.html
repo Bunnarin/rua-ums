@@ -17,14 +17,12 @@
         width: 100%;
         -webkit-overflow-scrolling: touch;
     }
-    th {
-        border: 1px solid #dee2e6;
-    }
     th, td {
-        max-width: fit-content(50%);
+        max-width: 0;
         white-space: wrap;
         text-overflow: ellipsis;
         text-align: left;
+        overflow: hidden;
     }
 </style>
 {% endblock %}
@@ -100,9 +98,11 @@
                     .every(function() {
                         var column = this;
                         var header = $(column.header()); // Get the header element
-                        // Create input element
+                        // create this hidden header so that when we export the excel knows the what it is
+                        var title = $('<p hidden>' + header.text().trim() + '</p>')
+                            .appendTo(header.empty());
                         var input = $('<input placeholder="' + header.text().trim() + '" style="field-sizing: content;"/>')
-                            .appendTo(header.empty()) // Empty existing header text and append input
+                            .appendTo(header) // Empty existing header text and append input
                             .on('keyup change clear', function() {
                                 if (column.search() !== this.value) {
                                     column.search(this.value).draw();

@@ -5,7 +5,7 @@ from .forms import UserForm, StudentForm
 class UserListView(BaseListView):
     model = User
     table_fields = ['first_name', 'last_name', 'email']
-    object_actions = [('✏️', 'users:change_user', None), ('🗑️', 'users:delete_user', None)]
+    object_actions = [('✏️', 'users:change_user', None), ('❌', 'users:delete_user', None)]
     actions = [('+', 'users:add_user', None),
                ('import', 'users:import_user', 'add_user')]
 
@@ -15,6 +15,12 @@ class UserListView(BaseListView):
 class UserImportView(BaseImportView):
     model = User
     form_class = UserForm
+    flat_fields = ['first_name', 'last_name', 'email']
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 class UserCreateView(BaseCreateView):
     model = User
@@ -36,7 +42,7 @@ class StudentListView(BaseListView):
     table_fields = ['user.first_name', 'user.last_name', '_class', 'user.email']
     object_actions = [
         ('✏️', 'users:change_student', None), 
-        ('🗑️', 'users:delete_student', None), 
+        ('❌', 'users:delete_student', None), 
         ('score', 'academic:view_score', None)
     ]
     actions = [('+', 'users:add_student', None),
@@ -45,6 +51,7 @@ class StudentListView(BaseListView):
 class StudentImportView(BaseImportView):
     model = Student
     form_class = StudentForm
+    flat_fields = ['first_name', 'last_name', 'email']
     
 class StudentCreateView(BaseCreateView):
     model = Student

@@ -49,25 +49,28 @@ def create_score_form_class(schedule_pk):
     
 class ScheduleForm(forms.ModelForm):
     # add the prof query field to get or create
-    first_name = forms.CharField()
-    last_name = forms.CharField()
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
     email = forms.CharField(required=False, widget=forms.HiddenInput())
     
     class Meta:
         model = Schedule
-        fields = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'course', '_class']   
+        fields = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'course', 'classroom']   
 
     def __init__(self, *args, request, **kwargs):
         super().__init__(*args, **kwargs)
         # filter the course choices based on the current affiliation
         self.fields['course'].queryset = Course.objects.get_queryset(request=request)
         # populate the first_name and last_name fields if have self.object
-        if self.instance.pk:
+        if self.instance.pk and self.instance.professor:
             self.fields['first_name'].initial = self.instance.professor.first_name
             self.fields['last_name'].initial = self.instance.professor.last_name
 
     def clean(self):
         data = self.cleaned_data
+        if not data.get('first_name') and not data.get('last_name') and not data.get('email'):
+            # they opt to not put professor
+            return data
         filters = {'first_name': data['first_name'], 'last_name': data['last_name']}
         if data.get('email'):
             filters['email'] = data['email']
@@ -85,7 +88,10 @@ class ScheduleForm(forms.ModelForm):
     def save(self, commit=True):
         data = self.cleaned_data
         self.instance = super().save(commit=False)
-        self.instance.professor = data['professor']
+        if data.get('professor'):
+            self.instance.professor = data['professor']
+        else:
+            self.instance.professor = None
         if commit:
             self.instance.save()
         return self.instance

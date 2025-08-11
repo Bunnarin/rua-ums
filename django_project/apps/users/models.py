@@ -40,6 +40,11 @@ class User(AbstractUser):
         else:
             while User.objects.filter(username=self.username).exclude(pk=self.pk).exists():
                 self.username += str(random.randint(0, 9))
+        
+    def save(self, *args, **kwargs):
+        # call the clean here incase we call objects.create and it doesnt clean
+        self.clean()
+        super().save(*args, **kwargs)
             
     class Meta:
         permissions = [
@@ -49,7 +54,7 @@ class User(AbstractUser):
         ]
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    user = models.OneToOneField(User, on_delete=models.PROTECT, editable=False)
     _class = models.ForeignKey('academic.Class', on_delete=models.SET_NULL, related_name="students", null=True, blank=True)
     
     objects = RLSManager(field_with_affiliation='_class')

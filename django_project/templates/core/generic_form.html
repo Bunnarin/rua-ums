@@ -4,15 +4,14 @@
 <!-- for select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />  
-<!-- for inline formset -->
-<script src="{% static 'js/formset.js' %}"></script>
-<script type="text/javascript">
-    $('.formset_row').formset({
-        prefix: '{{ formset.prefix }}',
-        addCssClass: 'btn btn-primary',  
-        deleteCssClass: 'btn btn-danger',
-    });
-</script>   
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    input {
+        width: 100%;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -77,8 +76,8 @@
 {{ block.super }}
 <!-- for select2 -->
 <script>
-    $(document).ready(function() {
-        // Initialize Select2 on all select elements
+    // to be called when new form get created so that they can have the select functionality as well
+    function initializeSelect2() {
         $('select').each(function() {
             $(this).select2();
         });
@@ -91,6 +90,22 @@
                 width: '100%'
             });
         });
+    }
+
+    $(document).ready(function() {
+        // Initialize Select2 on initial page load
+        initializeSelect2();
+    });
+</script>
+
+<!-- for inline formset -->
+<script src="{% static 'js/formset.js' %}"></script>
+<script type="text/javascript">
+    $('.formset_row').formset({
+        prefix: '{{ formset.prefix }}',
+        addCssClass: 'btn btn-primary',  
+        deleteCssClass: 'btn btn-danger',
+        added: initializeSelect2, // called the select2 init function when new form get created
     });
 </script>
 {% endblock %}

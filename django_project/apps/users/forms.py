@@ -59,7 +59,7 @@ class StudentForm(forms.ModelForm):
     
     class Meta:
         model = Student
-        fields = ['_class']      
+        fields = '__all__'   
     
     def __init__(self, *args, request, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,13 +67,12 @@ class StudentForm(forms.ModelForm):
 
     def save(self, commit=True):
         data = self.cleaned_data
-        user, _ = User.objects.get_or_create(
+        user = User.objects.create(
             first_name=data['first_name'],
             last_name=data['last_name'],
             email=data['email'],
         )
         user.save()
-
         student = super().save(commit=False)
         student.user = user
         if commit:

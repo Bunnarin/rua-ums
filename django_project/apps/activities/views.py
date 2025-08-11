@@ -12,7 +12,7 @@ class ActivityListView(BaseListView):
     """
     model = Activity
     table_fields = ['author', 'template', 'created_at', 'response']
-    object_actions = [('🗑️', 'activities:delete_activity', None)]
+    object_actions = [('❌', 'activities:delete_activity', None)]
     actions = [('+', 'activities:add_activity', None),
     ('clear all', 'activities:delete_activity', None)]
 
@@ -54,7 +54,7 @@ class ActivityTemplateListView(BaseListView):
     model = ActivityTemplate
     table_fields = ['name']
     object_actions = [('✏️', 'activities:change_activitytemplate', None),
-     ('🗑️', 'activities:delete_activitytemplate', None)]
+     ('❌', 'activities:delete_activitytemplate', None)]
     actions = [('+', 'activities:add_activitytemplate', None)]
 
 class ActivityTemplateCreateView(BaseCreateView):

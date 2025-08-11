@@ -1,7 +1,5 @@
-from django import forms
 from django.forms import formset_factory
 from django.urls import reverse_lazy
-from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from django.views.generic import View, ListView, DeleteView, CreateView, UpdateView
 from django.forms.models import modelform_factory
@@ -9,6 +7,7 @@ from django.shortcuts import redirect, render
 from apps.organization.models import Faculty, Program
 from apps.users.managers import UserRLSManager
 from .managers import RLSManager
+from .forms import get_default_form
 
 class BaseListView(ListView):
     """
@@ -183,7 +182,7 @@ class BaseDeleteView(BaseWriteView, DeleteView):
     permission_required = [('delete', None)]
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(DeleteView, self).get_context_data(**kwargs)
         obj = self.get_object()
         context['title'] = f"are you sure you want to delete {obj}?"
         return context
@@ -217,33 +216,20 @@ class BaseImportView(BaseCreateView):
     those rows of form comes with prefilled default that they input and they can modify it
     finally, they can submit the form and it will bulk create all the objects
     """
+    flat_fields = []
+    form_class = None    
 
-    def _get_default_form(self, request_post=None):
-        form_class = self.form_class or modelform_factory(self.model, fields=self.fields)
-        form = form_class(request_post or None, request=self.request)
-        for field in form.fields:
-            form.fields[field].required = False
-            try: 
-                field_instance = self.model._meta.get_field(field)
-                is_relation = field_instance.is_relation
-            except: 
-                is_relation = False
-            if not is_relation and not isinstance(form.fields[field], forms.BooleanField):
-                form.fields[field] = forms.CharField(widget=forms.Textarea())
-        return form
-    
     def get(self, request, *args, **kwargs):
-        default_form = self._get_default_form()
+        default_form = get_default_form(flat_fields=self.flat_fields, model=self.model, request=request, form_class=self.form_class)()
         return render(request, self.template_name, {'form': default_form, 'title': 'set the default values'})
     
-    @transaction.atomic
     def post(self, request, *args, **kwargs):
         FormSet_Class = formset_factory(
-            self.form_class or modelform_factory(self.model, fields=self.fields),
+            self.form_class or modelform_factory(self.model, fields='__all__'),
             extra=0, can_delete=True
         )
         if 'form-TOTAL_FORMS' not in request.POST:
-            form = self._get_default_form(request.POST)
+            form = get_default_form(flat_fields=self.flat_fields, model=self.model, request=request, form_class=self.form_class)(request.POST)
             if form.is_valid():
                 # calculating the num form
                 data = form.cleaned_data
@@ -283,3 +269,4 @@ class BaseImportView(BaseCreateView):
             else:
                 return render(request, self.template_name, {'formset': formset})
         return redirect(f'{self.app_label}:view_{self.model_name}')
+
