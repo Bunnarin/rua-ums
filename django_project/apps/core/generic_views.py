@@ -203,7 +203,7 @@ class BaseBulkDeleteView(BaseWriteView, View):
         return redirect(f'{self.app_label}:view_{self.model_name}')
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(View, self).get_context_data(**kwargs)
         context['title'] = f"are you sure you want to delete all these {self.model_name}s?"
         return context
 

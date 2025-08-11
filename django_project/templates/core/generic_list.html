@@ -17,12 +17,14 @@
         width: 100%;
         -webkit-overflow-scrolling: touch;
     }
+    th {
+        border: 1px solid #dee2e6;
+    }
     th, td {
-        max-width: 0;
+        max-width: fit-content(50%);
         white-space: wrap;
         text-overflow: ellipsis;
         text-align: left;
-        overflow: hidden;
     }
 </style>
 {% endblock %}
