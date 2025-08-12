@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.models import modelform_factory
+from django_jsonform.forms.fields import JSONFormField
 
 def get_default_form(flat_fields, model, request=None, form_class=None):
     """
@@ -42,7 +43,7 @@ def json_to_schema(template_json):
         key = schema['keys'][field['title']]
 
         key["type"] = type_map.get(field['type']) or "string"
-        key["required"] = field['required']
+        key["required"] = field['required'] or False
 
         match field['type']:
             case 'paragraph':
@@ -51,6 +52,7 @@ def json_to_schema(template_json):
                 key['format'] = field['type']
             case 'dropdown':
                 key['choices'] = field['choices']
+                key['widget'] = 'select'
             case 'checkbox':
                 key['items'] = {
                     "type": "string",

@@ -31,8 +31,8 @@ class OrganizationNullMixin(models.Model):
     """
     Abstract base class for models with both faculty and program affiliations.
     """
-    faculty = models.ForeignKey(Faculty, null=True, blank=True, on_delete=models.SET_NULL)
-    program = models.ForeignKey(Program, null=True, blank=True, on_delete=models.SET_NULL)
+    faculty = models.ForeignKey(Faculty, null=True, blank=True, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program, null=True, blank=True, on_delete=models.CASCADE)
     objects = RLSManager()
 
     def clean(self):

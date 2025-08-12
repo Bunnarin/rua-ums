@@ -76,16 +76,10 @@
 {{ block.super }}
 <!-- for select2 -->
 <script>
-    // to be called when new form get created so that they can have the select functionality as well
     function initializeSelect2() {
-        $('select').each(function() {
-            $(this).select2();
-        });
-        
-        // Handle form validation errors
-        $('form').on('forminvalid', function() {
-            // Reinitialize Select2 to show validation state
-            $('select').select2({
+        // Only initialize Select2 on regular select elements, not those managed by django-jsonform
+        $('select:not([name^="rjf§"])').each(function() {
+            $(this).select2({
                 theme: 'bootstrap-5',
                 width: '100%'
             });

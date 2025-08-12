@@ -47,10 +47,10 @@ class Activity(OrganizationNullMixin):
     """
     Stores user responses to activity templates with row-level security.
     """
-    template = models.ForeignKey(ActivityTemplate, null=True, on_delete=models.SET_NULL)
-    response = models.JSONField()
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    template = models.ForeignKey(ActivityTemplate, null=True, on_delete=models.SET_NULL, editable=False)
+    response = JSONField()
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
+    created_at = models.DateField(auto_now_add=True, editable=False)
 
     def get_user_rls_filter(self, user):
         return Q(author=user)

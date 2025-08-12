@@ -129,10 +129,8 @@ class BaseWriteView(View):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         # remove the faculty and program field cuz we gonna inject them instead
-        if form.fields.get('faculty'):
-            form.fields.pop('faculty')
-        if form.fields.get('program'):
-            form.fields.pop('program')
+        form.fields.pop('faculty', None)
+        form.fields.pop('program', None)
         # filter the field if it has affiliation
         for field in form.fields:
             try: related_model = self.model._meta.get_field(field).related_model

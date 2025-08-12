@@ -1,5 +1,4 @@
 from django.views.generic import ListView
-from apps.core.forms import json_to_schema
 from django.forms.models import modelform_factory
 from django_jsonform.widgets import JSONFormWidget
 from apps.core.generic_views import BaseDeleteView, BaseListView, BaseCreateView, BaseUpdateView, BaseBulkDeleteView
