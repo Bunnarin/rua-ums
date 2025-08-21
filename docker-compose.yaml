@@ -7,4 +7,4 @@ services:
       - "8001:8000"
     restart: unless-stopped
     extra_hosts:
-      - "host.docker.internal:10.226.0.1"
+      - "host.docker.internal:10.226.0.8"
