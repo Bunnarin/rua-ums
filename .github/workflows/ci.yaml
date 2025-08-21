@@ -37,9 +37,9 @@ jobs:
       - name: Build and bring up services
         run: |
           mv .env.staging .env
-          sudo docker compose up -d --build
-          sudo docker compose logs django_gunicorn
+          sudo docker compose -f docker-compose.staging.yaml up -d --build
+          sudo docker compose -f docker-compose.staging.yaml logs django_gunicorn
 
       - name: Run tests
         run: |
-          sudo docker compose exec django_gunicorn pytest
+          sudo docker compose -f docker-compose.staging.yaml exec django_gunicorn pytest

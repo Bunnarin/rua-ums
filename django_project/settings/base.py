@@ -140,8 +140,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGIN_METHODS = ["email", "username"]
 
 # crispy form
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
