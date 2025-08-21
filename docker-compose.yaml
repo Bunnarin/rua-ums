@@ -6,3 +6,5 @@ services:
     ports:
       - "8001:8000"
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:$(/sbin/ip route|awk '/default/ { print $3 }')"
