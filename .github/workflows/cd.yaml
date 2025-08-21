@@ -36,6 +36,6 @@ jobs:
                 sudo docker-compose up --build -d && \
                 sudo docker image prune -f; \
               else
-                sudo docker-compose restart django_gunicorn;
+                sudo docker compose restart django_gunicorn;
               fi
             "
